@@ -1,6 +1,8 @@
 <?php
 include '../connexion/coockies.php';
-include "../app/Crud.php";
+include "../app/CrudUser.php";
+
+$users = new User;
 
 if(isset($_POST['login'], $_POST['pass'])) {
     $name = $_POST['login'];
@@ -9,7 +11,7 @@ if(isset($_POST['login'], $_POST['pass'])) {
     // DEBUG
     // echo $name . " and " . $pass;
 
-    checkUser($name, $pass);
+    $users->checkUser($name, $pass);
 
     header("Location: index.php?p=resume");
 }

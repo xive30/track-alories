@@ -16,6 +16,10 @@ if ($p === 'home') {
     require '../pages/meal.php';
 } elseif ($p === 'signin') {
     require '../pages/signin.php';
+} elseif ($p === 'umeal') {
+    require '../pages/updateMeal.php';
+} elseif ($p === 'uuser') {
+    require '../pages/updateUser.php';
 } elseif ($p === 'deconnexion') {
     require '../connexion/deconnexion.php';
 }

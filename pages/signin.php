@@ -1,18 +1,25 @@
 <?php
-include '../app/Crud.php';
+include '../app/CrudUser.php';
+
+$user = new User;
+
+
 if(isset($_POST['userName'])) {
-    $name = $_POST['userName'];
-    $gender = $_POST['gender'];
-    $birthday = $_POST['birthday'];
-    $height = $_POST['height'];
-    $weight = $_POST['weight'];
-    $activity = $_POST['activity'];
-    $password = password_hash($_POST['userPass'], PASSWORD_DEFAULT);
+    $name = $user->valid_datas($_POST['userName']);
+    $gender = $user->valid_datas($_POST['gender']);
+    $birthday = $user->valid_datas($_POST['birthday']);
+    $height = $user->valid_datas($_POST['height']);
+    $weight = $user->valid_datas($_POST['weight']);
+    $activity = $user->valid_datas($_POST['activity']);
+    $password = password_hash($user->valid_datas($_POST['userPass']), PASSWORD_DEFAULT);
     
+    // DEBUG
     // echo $name . ", ". $gender . ", né le" . $birthday . ", " . $height . "cm, " . $weight . "kg, niveau d'activité physique :" . $activity;
     // echo "<br>";
     
-    $users = createUser($name, $gender, $birthday, $height, $weight, $activity, $password);
+    $users = $user->createUser($name, $gender, $birthday, $height, $weight, $activity, $password);
+    echo'<script>alert("Compte créé, Vous pouvez vous connecter." );window.location.href = "../public/index.php?p=home";</script>';
+    
 }
 ?>
 

@@ -2,7 +2,7 @@
 include '../connexion/coockies.php';
 include '../app/CrudMeal.php';
 
-$meals = new meals;
+$meals = new Meals;
 $userid = $userinfo['id'];
 $userName = $userinfo['userName'];
 
@@ -11,7 +11,7 @@ if (isset($_POST['meal'], $_POST['kal'])) {
     $kal = $_POST['kal'];
     // echo $userName . ", l'utilisateur n°" . $userid . " a consommé/e " . $kal . " calories, au repas " . $meal;
 
-    $meals->setMeal($userid, $meal, $kal);
+    $meals->updateMeal($userid, $meal, $kal);
     
     echo'<script>alert("Repas enregistré." );window.location.href = "../public/index.php?p=resume";</script>';
 }
