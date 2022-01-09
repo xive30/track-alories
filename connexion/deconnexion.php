@@ -1,9 +1,8 @@
 <?php
  session_start();
 
- //unsetcookie('mail');
+ //to destroy the coockie
  setcookie ("userinfo", "", time() - 36000);
  
-  // détruit la session
   header("Location: ../public/index.php");
 ?>

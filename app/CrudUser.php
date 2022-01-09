@@ -39,9 +39,9 @@ class User extends Database{
             $verifmdp = $userinfo['userPass'];
             
         }
-        if(password_verify($pass, $verifmdp) == TRUE) {
+        if(isset($verifmdp) && password_verify($pass, $verifmdp) == TRUE) {
             $requser = $con->prepare("SELECT * FROM users WHERE userName = ?");
-            $requser->execute(array($pass));
+            $requser->execute(array($name));
             $userexist = $requser->rowCount();
             if($userexist == 1) {
                 $userinfo = $requser->fetch();
@@ -59,16 +59,24 @@ class User extends Database{
     }
     
     public function updateUser($id, $height, $weight){
+        $con = $this->getDatabaseConnexion();
         $sql = "UPDATE users SET height='$height', weight='$weight' WHERE id='$id'";
-        $req = $this->con->prepare($sql);
+        $req = $con->prepare($sql);
         $req -> execute();
+        setcookie ("userinfo", "", time() - 36000);
+        $requser = $con->prepare("SELECT * FROM users WHERE id = ?");
+        $requser->execute(array($id));
+        $userinfo = $requser->fetch();
+        setcookie('userinfo',json_encode($userinfo), time()+36000);
         return "changement validé ";
     }      
 
     public function deleteUser($id){
-        $sql = "DELETE FROM users WHERE id='$id'";
-        $req = $this->con->prepare($sql);
-        $req -> execute();
-        return "utilisateur supprimé";
+        $con = $this->getDatabaseConnexion();
+        $sql= "DELETE FROM users WHERE id = '$id'";
+        $stmt = $con->prepare($sql);
+            $stmt->execute();
     }
 }    
+
+

@@ -1,0 +1,54 @@
+$firstcolor: #f4f2f3;
+$secondcolor: #d398cb;
+$thirdcolor: #b8cfd8;
+$fourthcolor: #64766A;
+
+
+
+body{
+    background-color: $thirdcolor;
+}
+
+.content{
+    min-height: 500px;
+}
+
+.bg-firstcolor{
+    background-color: $secondcolor;
+}
+
+.card{
+    margin: 20px 0px;
+    padding-bottom: 2rem;
+    &-selecolor{
+        background-color: $firstcolor;
+        border: 5px solid $fourthcolor;
+        border-radius: 5%;
+    }
+}
+
+.ajout {
+    padding: 10px 20px;
+    border-radius: 50%;
+    font-size: 3rem;
+    text-decoration: none;
+    border: 2px solid $fourthcolor ;
+    color: $fourthcolor;
+    background-color:$firstcolor ;
+    &:hover{
+        border: 2px solid $firstcolor;
+        color: $firstcolor;
+        background-color:$fourthcolor ;
+    }
+}
+
+.textdeconone{
+    text-decoration: none;
+    color: #000;
+}
+
+.progress{
+    &-space{
+        margin: 30px 15px;
+    }
+}

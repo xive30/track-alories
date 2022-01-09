@@ -21,7 +21,8 @@ if(isset($userinfo)){
 
     // review informations of the connected personne
     ?>
-    <div border="1" class="text-center">
+
+    <div class="text-center card card-selecolor">
         <h2 class="mt-4">Résumé</h2>
         <div class="row mb-3">
 
@@ -93,118 +94,127 @@ if(isset($userinfo)){
             </div>
 
         </div>
-
+        <!-- a link a page to change your weight and height -->
+        <div class="mb-3">
+            <button class="btn btn-lg bg-firstcolor" ><a  class="textdeconone" href="../public/index.php?p=uuser">j'ai changé.e</a></button>
+        </div>
     </div>
 
     <hr>
 
-    <!-- a link a page to change your weight and height -->
-    <h2 class="mt-4 text-center"><a href="index.php?p=uuser">Je veux changer mon poids ou ma taille</a></h2>
-    <p>ne fonctionne pas resume line 83</p>
 
-    <!-- a grid to keep track of the last entries -->
-    <h2 class="mt-4 text-center">Dernières entrées</h2>
-
-    <?php
-        include '../app/functionsTable.php';
-        $userid = $userinfo['id'];
-        $rows = $meals->getAllMeals($userid);
-        
-        // Table of the last meals
-        $headers = ["Enregister le", "Calories", "Repas"];
-        printMeals($rows, $headers);
-
-        // Total for the day
-        $totals = $meals->getKals($userid);
-        
-    ?>
-
-    <!-- progress bar-->
-    <?php $kalsOfTheDay =  round($totals/$need*100);?>
-    <div class="progress "style="height: 30px";>
-        <?php if ($totals < $base) {
-            echo '<div class="progress-bar bg-success" role="progressbar" style="width:' . $kalsOfTheDay . '%" aria-valuenow=' . $kalsOfTheDay . ' aria-valuemin="0" aria-valuemax="100">' . $totals . ' Calories</div>';
-        } elseif ($totals > $base && $totals < $need) {
-            echo '<div class="progress-bar bg-warning" role="progressbar" style="width: ' . $kalsOfTheDay . '%" aria-valuenow=' . $kalsOfTheDay . ' aria-valuemin="0" aria-valuemax="100">' . $totals . ' Calories</div>';
-        } else {
-            echo '<div class="progress-bar bg-danger" role="progressbar" style="width: ' . $kalsOfTheDay . '%" aria-valuenow=' . $kalsOfTheDay . ' aria-valuemin="0" aria-valuemax="100">' . $totals . ' Calories</div>';
-        }
-        ?>
-    </div>
-
-    <!-- New entry-->
-    <div class="text-center">
-        <h3 class="mt-4 ">Rajouter une entrée </h3>
-        <h2><a class="ajout" href="index.php?p=meal">+</a></h2>
-    </div>
+    <div class="card card-selecolor">
+        <!-- a grid to keep track of the last entries -->
+        <h2 class="mt-4 text-center">Derniers Repas</h2>
     
-
-    <!-- sum up the calories by days for the last ten days-->
-    <div class="text-center">
-        <h2 class="mt-4">Total des calories des derniers jours</h2>
-    </div>
-    <?php
-
-        $days = $meals->getKalByDay($userid);
-        // Table of kals by day
-        $headers = ["total", "jour"];
-        printMeals($days, $headers );
-        // var_dump($days);
-        // echo "<br><br>";
-        // foreach($days as $day){
-        //     $i = 0;
-        //     var_dump($day[$i]);
-        //    $i++;
-        // }
-
-
-    // a graphics for the last ten days 
-    $dataPoints = array();
-    try{
-        $handle = $meals->getKalByDay($userid);
-        $handle->execute(); 
-        $result = $handle->fetchAll(\PDO::FETCH_OBJ);
+        <?php
+            include '../app/functionsTable.php';
+            $userid = $userinfo['id'];
+            $rows = $meals->getAllMeals($userid);
             
-        foreach($result as $row){
-            array_push($dataPoints, array("x"=> $row->jour, "y"=> $row->total));
-        }
-        $con = null;
-    }
-    catch(\PDOException $ex){
-        print($ex->getMessage());
-    }
-        
-    ?>
-    <!DOCTYPE HTML>
-    <html>
-    <head>  
-    <script>
-    window.onload = function () {
+            // Table of the last meals
+            $headers = ["Enregister le", "Calories", "Repas"];
+            printMeals($rows, $headers);
     
-    var chart = new CanvasJS.Chart("chartContainer", {
-        animationEnabled: true,
-        exportEnabled: true,
-        theme: "light1", // "light1", "light2", "dark1", "dark2"
-        title:{
-            text: "PHP Column Chart from Database"
-        },
-        data: [{
-            type: "bar", //change type to bar, line, area, pie, etc  
-            dataPoints: <?php echo json_encode($dataPoints, JSON_NUMERIC_CHECK); ?>
-        }]
-    });
-    chart.render();
+            // Total for the day
+            $today = date('Y-m-j');
+            $totals = $meals->getKals($userid, $today);
+            
+            // DEBUG
+            // var_dump($totals);
+        ?>
     
-    }
-    </script>
-    </head>
-    <body>
-    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
-    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-    </body>
-    </html>   
-<?php
+        <!-- progress bar-->
+        <?php $kalsOfTheDay =  round($totals/$need*100);?>
+        <div class="progress progress-space "style="height: 30px";>
+            <?php if ($totals < $base) {
+                echo '<div class="progress-bar bg-success" role="progressbar" style="width:' . $kalsOfTheDay . '%" aria-valuenow=' . $kalsOfTheDay . ' aria-valuemin="0" aria-valuemax="100">' . $totals . ' Calories</div>';
+            } elseif ($totals > $base && $totals < $need) {
+                echo '<div class="progress-bar bg-warning" role="progressbar" style="width: ' . $kalsOfTheDay . '%" aria-valuenow=' . $kalsOfTheDay . ' aria-valuemin="0" aria-valuemax="100">' . $totals . ' Calories</div>';
+            } else {
+                echo '<div class="progress-bar bg-danger" role="progressbar" style="width: ' . $kalsOfTheDay . '%" aria-valuenow=' . $kalsOfTheDay . ' aria-valuemin="0" aria-valuemax="100">' . $totals . ' Calories</div>';
+            }
+            ?>
+        </div>
+        <!-- New entry-->
+        <div class="text-center">
+            <h3 class="mt-4 ">Rajouter une entrée </h3>
+            <div class="mb-3">
+                <button class="btn btn-lg bg-firstcolor" ><a  class="textdeconone" href="../public/index.php?p=meal">+</a></button>
+            </div>
+        </div>
+    </div>
 
+    <hr>
+    
+    <div class="card card-selecolor">
+
+        <!-- sum up the calories by days for the last ten days-->
+        <div class="text-center">
+            <h2 class="mt-4">Total des calories des derniers jours</h2>
+        </div>
+        <?php
+    
+            $days = $meals->getKalByDay($userid);
+            // Table of kals by day
+            $headers = ["total", "jour"];
+            printMeals($days, $headers );
+            // var_dump($days);
+            // echo "<br><br>";
+            // foreach($days as $day){
+            //     $i = 0;
+            //     var_dump($day[$i]);
+            //    $i++;
+            // }
+    
+    
+        // a graphics for the last ten days 
+        $dataPoints = array();
+        try{
+            $handle = $meals->getKalByDay($userid);
+            $handle->execute(); 
+            $result = $handle->fetchAll(\PDO::FETCH_OBJ);
+                
+            foreach($result as $row){
+                array_push($dataPoints, array("x"=> $row->jour, "y"=> $row->total));
+            }
+            $con = null;
+        }
+        catch(\PDOException $ex){
+            print($ex->getMessage());
+        }
+            
+        ?>
+        <!DOCTYPE HTML>
+        <html>
+        <head>  
+        <script>
+        window.onload = function () {
+        
+        var chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            exportEnabled: true,
+            theme: "light1", // "light1", "light2", "dark1", "dark2"
+            title:{
+                text: "PHP Column Chart from Database"
+            },
+            data: [{
+                type: "line", //change type to bar, line, area, pie, etc  
+                dataPoints: <?php echo json_encode($dataPoints, JSON_NUMERIC_CHECK); ?>
+            }]
+        });
+        chart.render();
+        
+        }
+        </script>
+        </head>
+        <body>
+        <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+        <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+        </body>
+        </html>   
+    </div>
+<?php
 } else {
     echo "<a href='index.php?p=index'>retour</a>";
 }

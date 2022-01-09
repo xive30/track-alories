@@ -3,14 +3,12 @@ require_once 'database.php';
 
 class Meals extends Database{
 
-    // date("jj/mm");
-
     // create meals
-    function setMeal($userid, $meal, $kal) {
+    function setMeal($meal, $userid, $kal, $date) {
         try {
             $con = $this->getDatabaseConnexion();
-            $sql = "INSERT INTO meals(userid, meal, calories)
-                    VALUES ('$userid','$meal',  '$kal')";
+            $sql = "INSERT INTO meals(meal, userid, calories, created)
+                    VALUES ('$meal', '$userid', '$kal', '$date')";
             $con->exec($sql);
         }
         catch(PDOException $e) {
@@ -33,10 +31,10 @@ class Meals extends Database{
     // get kals for the last ten days
     function getKalByDay($userid){
         $con = $this->getDatabaseConnexion();
-        $req = "SELECT sum(calories) AS total , DATE_FORMAT(created, '%d/%m/%Y') AS jour
+        $req = "SELECT sum(calories) AS total , created AS jour
             FROM meals 
             WHERE userid = '$userid' 
-            GROUP BY DATE_FORMAT(created, '%d/%m/%Y')
+            GROUP BY jour
             ORDER BY jour DESC
             LIMIT 0, 10";
         $rows = $con->query($req);
@@ -44,23 +42,29 @@ class Meals extends Database{
     }
     
     // get kals for the day
-    function getKals($userid){
+    function getKals($userid, $now ){
         $con = $this->getDatabaseConnexion();
-        $req = "SELECT sum(calories) AS total , DATE_FORMAT(created, '%d/%m/%Y') AS jour
+        $req = "SELECT sum(calories) AS total , created
             FROM meals 
-            WHERE userid = '$userid' 
-            GROUP BY DATE_FORMAT(created, '%d/%m/%Y')
-            ORDER BY jour DESC
+            WHERE userid = '$userid' AND created = '$now'
+            GROUP BY created
+            ORDER BY created DESC
             LIMIT 0, 1";
         $totals = $con->query($req);
-        foreach($totals as $total){
-            return $total[0];
+        if ($totals === null){
+            return 0;
+        }else {
+            foreach($totals as $total){
+                return $total[0];
+            }
         }
     }
 
-    public function deleteRepas(){
-        $sql = "DELETE FROM repas WHERE date <= current_date -11" ;
-        $req = $this->getDatabaseConnexion()->prepare($sql);
+    public function deleteAllMeals($id){
+        $con = $this->getDatabaseConnexion();
+        $sql = "DELETE FROM meals WHERE userid = '$id'";
+        $req = $con->prepare($sql);
         $req -> execute();
     }
+    // $sql = 'DELETE FROM repas WHERE date <= current_date -11';
 }
